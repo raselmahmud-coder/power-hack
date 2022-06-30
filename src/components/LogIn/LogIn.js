@@ -1,40 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const LogIn = () => {
-//   const navigate = useNavigate();
-  const location = useLocation();
-//   const from = location.state?.from?.pathname || "/";
-/*   useEffect(() => {
-    if (logInUser) {
-       <UseToken user={logInUser}/>;
-      navigate(from, { replace: true });
-    }
-  }, [navigate, from, logInUser]);
+  //   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-  if (loadingUser) {
-    return (
-      <>
-        <SpinnerCircular
-          speed={120}
-          color={"#0FCFEC"}
-          style={{ margin: "0px auto", display: "block" }}
-        />
-      </>
-    );
-  }
-  if (errorUser) {
-    toast.error(`Custom log in ${errorUser}`, {
-      toastId: "custom_err",
-      theme: "colored",
-    });
-  } */
   const handleForm = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    // await signInWithEmailAndPassword(email, password);
+
+    axios({
+      method: "get",
+      url: `http://localhost:5000/login`,
+      data: {
+        email,
+        password,
+      },
+    }).then((res) => {
+      if (res.data.status === 200) {
+        const accessToken = res.data.token;
+        // console.log(res);
+        // console.log(accessToken);
+        localStorage.setItem("accessToken", accessToken);
+      }
+    });
   };
   return (
     <>
