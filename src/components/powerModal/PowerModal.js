@@ -9,7 +9,6 @@ const PowerModal = ({
   setApiError,
   forPost,
   setPowerModal,
- 
 }) => {
   const [error, setError] = useState(false);
   //   const [powerModal, setPowerModal] = useState(true);
@@ -35,12 +34,14 @@ const PowerModal = ({
       setError(false);
       setBills({ id, name, email, phone, paidAmount });
       setSpinner(true);
-        if (forPost === "post") {
+      if (forPost === "post") {
         //   console.log(forPost,"for post and edit",ForEdit);
         axios({
           method: "post",
-          url: `http://localhost:5000/add-billing`,
-          headers: {},
+          url: `https://power-rm.herokuapp.com/add-billing`,
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
           data: {
             name,
             email,
@@ -59,10 +60,9 @@ const PowerModal = ({
             setApiError(false);
           }
         });
-        }
-       
+      }
     }
-};
+  };
   return (
     <>
       <input type="checkbox" id="add-bill" className="modal-toggle" />

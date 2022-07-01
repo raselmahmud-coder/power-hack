@@ -32,16 +32,18 @@ const BillInfo = ({
     }
     axios({
       method: "get",
-      url: `http://localhost:5000/billing-list`,
-      headers: {},
+      url: `https://power-rm.herokuapp.com/billing-list`,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     })
       .then((resp) => {
         if (resp.data) {
           setSpinner(false);
           setBills(resp.data.response);
           let createArry = [];
-          for (let index = 0; index < resp.data.currentPage; index++) {
-            const element = resp.data.currentPage[index];
+          for (let index = 10; index < resp.data.totalPages; index++) {
+            const element = resp.data.totalPages[index];
             createArry.push(element);
           }
           setPagination(createArry);
@@ -67,7 +69,7 @@ const BillInfo = ({
   const handleDelete = (id) => {
     axios({
       method: "delete",
-      url: `http://localhost:5000/delete-billing/${id}`,
+      url: `https://power-rm.herokuapp.com/delete-billing/${id}`,
       headers: {
         authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

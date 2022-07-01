@@ -18,8 +18,10 @@ const Registration = () => {
     } else {
       axios({
         method: "post",
-        url: `http://localhost:5000/registration`,
-        headers: {},
+        url: `https://power-rm.herokuapp.com/registration`,
+        headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         data: {
           name,
           email,

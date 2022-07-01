@@ -14,7 +14,7 @@ const LogIn = () => {
 
     axios({
       method: "get",
-      url: `http://localhost:5000/login`,
+      url: `https://power-rm.herokuapp.com/login`,
       headers: {
         email,
         password,

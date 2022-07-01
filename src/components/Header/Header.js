@@ -8,7 +8,7 @@ const Header = () => {
   useEffect(() => {
     axios({
       method: "get",
-      url: `http://localhost:5000/billing-list`,
+      url: `https://power-rm.herokuapp.com/billing-list`,
       headers: {
         authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

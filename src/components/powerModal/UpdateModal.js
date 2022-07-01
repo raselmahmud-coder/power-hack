@@ -38,7 +38,7 @@ const UpdateModal = ({
 
       axios({
         method: "put",
-        url: `http://localhost:5000/update-billing/${ForEdit}`,
+        url: `https://power-rm.herokuapp.com/update-billing/${ForEdit}`,
         headers: {authorization:`Bearer ${localStorage.getItem("accessToken")}`},
         data: {
           name,
