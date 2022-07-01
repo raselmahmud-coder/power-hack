@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import UpdateModal from "../powerModal/UpdateModal";
 
 const BillInfo = ({
   billsInfo,
@@ -7,9 +8,18 @@ const BillInfo = ({
   setSpinner,
   apiError,
   setApiError,
+  search,
 }) => {
   const [bills, setBills] = useState([]);
-  // console.log("api error", apiError);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [pagination, setPagination] = useState([]);
+  const [ForEdit, setForEdit] = useState("");
+  const exists = bills.filter(
+    (text) =>
+      text.name.toLowerCase() == search.toLowerCase() ||
+      text.phone == search ||
+      text.email.toLowerCase() == search
+  );
   useEffect(() => {
     if (!(Object.keys(billsInfo).length === 0)) {
       console.log("object not empty");
@@ -28,7 +38,13 @@ const BillInfo = ({
       .then((resp) => {
         if (resp.data) {
           setSpinner(false);
-          setBills(resp.data);
+          setBills(resp.data.response);
+          let createArry = [];
+          for (let index = 0; index < resp.data.currentPage; index++) {
+            const element = resp.data.currentPage[index];
+            createArry.push(element);
+          }
+          setPagination(createArry);
         }
       })
       .catch((err) => console.log("error", err));
@@ -42,13 +58,36 @@ const BillInfo = ({
     )
   );
   const handleEdit = (id) => {
+    setForEdit(id);
+    setUpdateModal(true);
+    /*    */
+
     console.log("edit it", id);
   };
   const handleDelete = (id) => {
-    console.log("delete it", id);
+    axios({
+      method: "delete",
+      url: `http://localhost:5000/delete-billing/${id}`,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }).then((res) => {
+      console.log("delete", res);
+    });
   };
   return (
     <>
+      {updateModal && (
+        <UpdateModal
+          setPowerModal={setUpdateModal}
+          ForEdit={ForEdit}
+          billsInfo={bills}
+          spinner={spinner}
+          setSpinner={setSpinner}
+          apiError={apiError}
+          setApiError={setApiError}
+        />
+      )}
       <div className="overflow-x-auto">
         <table className="table table-zebra w-full">
           <thead>
@@ -76,9 +115,13 @@ const BillInfo = ({
                 <td>{bill?.phone}</td>
                 <td>$ {bill?.paidAmount}</td>
                 <td>
-                  <button onClick={() => handleEdit(bill?._id)} className="btn">
+                  <label
+                    onClick={() => handleEdit(bill?._id)}
+                    className="btn"
+                    htmlFor="edit-bill"
+                  >
                     Edit
-                  </button>
+                  </label>
                   <button
                     onClick={() => handleDelete(bill?._id)}
                     className="btn ml-2"
@@ -92,10 +135,11 @@ const BillInfo = ({
         </table>
       </div>
       <div className="btn-group flex justify-center mt-6">
-        <button className="btn">1</button>
-        <button className="btn btn-active">2</button>
-        <button className="btn">3</button>
-        <button className="btn">4</button>
+        {pagination.map((item, sl) => (
+          <button key={sl} className="btn">
+            {sl + 1}
+          </button>
+        ))}
       </div>
     </>
   );

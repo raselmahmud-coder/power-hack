@@ -1,9 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const Registration = () => {
+  const navigate = useNavigate();
   const handleRegistration = (e) => {
     e.preventDefault();
     const name = e.target.name.value;
@@ -27,6 +28,7 @@ const Registration = () => {
       }).then((res) => {
         if (res.data.status === 200) {
           e.target.reset();
+          navigate("/");
           toast.success(`user has created`, {
             toastId: "user-add",
           });

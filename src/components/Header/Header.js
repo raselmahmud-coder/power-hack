@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo512.png";
-
+import axios from "axios";
 const Header = () => {
+  const token = localStorage.getItem("accessToken");
+  const [paidAmount, setPaidAmount] = useState(0);
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: `http://localhost:5000/billing-list`,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }).then((data) => {
+      let total = 0;
+      data.data.response.forEach((item) => {
+        total = total + parseInt(item.paidAmount);
+        // console.log(item.paidAmount);
+      });
+      setPaidAmount(total);
+    });
+  }, []);
+
+  const handleLogOut = () => {
+    localStorage.removeItem("accessToken");
+  };
   const menu1 = (
     <>
       <li>
@@ -11,22 +33,26 @@ const Header = () => {
 
       {
         <li>
-          <Link to={"/log-in"}>Log In</Link>
+          {token ? (
+            <button onClick={handleLogOut}>Log out</button>
+          ) : (
+            <Link to={"/log-in"}>Log In</Link>
+          )}
         </li>
       }
     </>
   );
   const menu2 = (
     <>
-      <li>
-        <Link to={"/"}>Registration</Link>
-      </li>
-
-      {
+      {!token && (
         <li>
-          <Link to={"/log-in"}>Paid Total: 0</Link>
+          <Link to={"/"}>Registration</Link>
         </li>
-      }
+      )}
+
+      <li>
+        <p>Paid Total:$ {paidAmount}</p>
+      </li>
     </>
   );
   return (

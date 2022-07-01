@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const LogIn = () => {
-  //   const navigate = useNavigate();
+    const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const handleForm = async (e) => {
@@ -15,16 +15,16 @@ const LogIn = () => {
     axios({
       method: "get",
       url: `http://localhost:5000/login`,
-      data: {
+      headers: {
         email,
         password,
       },
     }).then((res) => {
       if (res.data.status === 200) {
         const accessToken = res.data.token;
-        // console.log(res);
-        // console.log(accessToken);
-        localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("accessToken", accessToken);
+          navigate('/')
+          e.target.reset()
       }
     });
   };
